@@ -58,7 +58,7 @@ int main()
     sem_init(&vazio, 0, BUFFER);          // Inicializar os semáforos
     sem_init(&cheio, 0, 0);               // de vazio e cheio
 
-    int numpc[5] = {1,2,3,4,5};               // Usado para numerar o
+    int numpc[5] = {1,2,3,4,5};           // Usado para numerar o
                                           // produtor e consumidor
 
     for(int i = 0; i < 5; i++){
@@ -80,4 +80,6 @@ int main()
     pthread_mutex_destroy(&mutex);  // Limpeza do lixo
     sem_destroy(&vazio);
     sem_destroy(&cheio);
+
+    return 0;
 }
