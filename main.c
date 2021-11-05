@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <semaphore.h>
 #include <pthread.h>
 
@@ -50,7 +51,7 @@ void *remove_item(void *rno)
     }
 }
 
-int main()
+int main(int argc, int* argv[])
 {
     pthread_t produtor[5], consumidor[5]; // Definição dos tipos
     pthread_mutex_init(&mutex, NULL);     // Inicializar o mutex
@@ -58,15 +59,18 @@ int main()
     sem_init(&vazio, 0, BUFFER);          // Inicializar os semáforos
     sem_init(&cheio, 0, 0);               // de vazio e cheio
 
-    int numpc[5] = {1,2,3,4,5};           // Usado para numerar o
-                                          // produtor e consumidor
+    int sleept = &argv[1];                 // Tempo para a função dormir antes de encerrar
+    int nump = &argv[2];                   // Adiquirir o produtor e consumidor
+    int numc = &argv[3];                   // através do argv[2] e argv[3]
+
+    printf("sleept: %d\n nump: %d\n numc: %d\n", sleept, nump, numc);
 
     for(int i = 0; i < 5; i++){
-        pthread_create(&produtor[i], NULL, (void *)insert_item, (void *)&numpc[i]);
+        pthread_create(&produtor[i], NULL, (void *)insert_item, (void *)&nump);
     } // Cria a thread do produtor
 
     for(int i = 0; i < 5; i++){
-        pthread_create(&consumidor[i], NULL, (void *)remove_item, (void *)&numpc[i]);
+        pthread_create(&consumidor[i], NULL, (void *)remove_item, (void *)&numc);
     } // Cria a thread do consumidor
 
     for(int i = 0; i < 5; i++){
@@ -76,6 +80,9 @@ int main()
     for(int i = 0; i < 5; i++){
         pthread_join(consumidor[i], NULL);  // Prevenção de deadlock
     }
+
+    printf("Programa adormecendo por %d segundos...", sleept);
+    sleep(sleept);
 
     pthread_mutex_destroy(&mutex);  // Limpeza do lixo
     sem_destroy(&vazio);
